@@ -41,3 +41,13 @@ utilizar useEffect() y useState([]) puede haber un error si no hay un areglo [] 
 components:
     TaskCard.jsx
 
+----historial en el github del CRUD con react---------
+
+------configuracion tailwindCSS-----------------
+vamos a la pagina   
+    buscamos la guia con vite
+        son dos comandos acerlos correr
+            el segundo creara dos archivos afuera
+                y luego seguir el historial de  github
+                    luego de haber configurado los dos archivos
+                        npm run dev
