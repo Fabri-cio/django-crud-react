@@ -1,0 +1,158 @@
+------------------CONFIGURACION DEL PROYECTO------------------------
+paquete de python para crear entornos virtuales
+    pip install virtualenv
+
+configurar un entorno virtual env
+    py -m venv venv
+
+activar el entorno virtual de python (venv) 
+    f1  python interpeter     o     py activate
+
+instalamos framework django
+    pip install django
+
+para ver comandos de django-admin
+    django-admin
+
+iniciamos un nuevo proyecto con startproject el punto es para que no
+cre una carpeta si no que todos los archivos esten afuera como:
+django_crud_api y manage.py
+    django-admin startproject django_crud_api .
+
+ahora vamos a iniciar una aplicacion llamada tareas (tasks)
+    paramos el servidor Ctrol+C
+    python manage.py startapp tasks
+crea una carpeta tasks al mismo nivel que django_crud_api
+
+para añadir la aplicacion tasks dentro de nuestro proyecto vamos a:
+    settings.py en django_crud_api
+    y en la lista INTALLED_APPS agregamos la aplicacion:
+    'tasks'
+
+luego vamos a con django aplicara las migraciones pendientes
+a la base de datos, lo que significa que sincroniza la estructura
+de la base de datos con los modelos definidos en el proyectode django
+    python manage.py migrate
+
+hacemos la prueba con el servidor
+    py manage.py runserver
+
+-------------------CONFIGURACION DJANGO REST FRAMEWORK------------------------
+es el primer paso para integrar Django REST Framework en tu proyecto Django y 
+comenzar a desarrollar APIs RESTful. Esto te proporciona herramientas para 
+crear endpoints que permitan a los clientes (aplicaciones web o móviles) 
+interactuar con tu backend de Django de manera eficiente mediante solicitudes HTTP.
+instalamos la libreria o framework djangorestframework.
+Es ideal para construir sistemas que necesitan interactuar con otras aplicaciones a través de APIs.
+    pip install djangorestframework
+
+CORS (Cross-Origin Resource Sharing) es un mecanismo de seguridad implementado 
+en los navegadores que controla cómo los recursos de un sitio web 
+(como datos o APIs) pueden ser solicitados desde otro dominio diferente 
+al del servidor que los aloja. Esto evita problemas de seguridad relacionados 
+con solicitudes de orígenes no autorizados.
+permitiendo que tu API o aplicación web acepte solicitudes desde diferentes dominios.
+instalamos la libreria django-cors-headers
+    pip install django-cors-headers
+
+ayadimos a settings.py a la lista de INTALLED_APPS:
+    'cosrsheaders'
+    'rest_framework'
+para obtener las funcionalidade de las librerias o frameworks
+
+Los middlewares son componentes que procesan las solicitudes 
+y respuestas antes o después de que lleguen o salgan de las 
+vistas en Django. Cada uno tiene un propósito específico, y 
+su orden en la lista es importante porque Django los aplica en ese orden.
+Middlewares son componentes que procesan cada solicitud antes 
+de que llegue a las vistas y cada respuesta antes de ser enviada al cliente.
+nota: se tiene que verificar en que orden va el middlewar de cosrsheaders en el sitio web.
+    ayadimos a settings.py a la lista de MIDDLEWARE:
+        "corsheaders.middleware.CorsMiddleware",
+    tambien copiamos de la pagina la lista:
+    CORS_ALLOWED_ORIGINS = [
+    "https://example.com",
+    "https://sub.example.com",
+    "http://localhost:8080",
+    "http://127.0.0.1:9000",
+    ]
+    CORS_ALLOWED_ORIGINS es una configuración que lista los dominios 
+    desde los cuales se permiten solicitudes a tu servidor.
+    Asegura que solo los dominios especificados pueden interactuar 
+    con tu API, protegiendo así tu servidor de solicitudes 
+    no autorizadas provenientes de otros dominios.
+
+-------------MODELO DE TAREAS---------------------
+Funcionalidad de Django con Modelos:
+ORM (Object-Relational Mapping): Django usa un sistema llamado ORM
+para convertir instancias de clases Python en filas de una base de 
+datos. Esto significa que puedes usar Python para crear, leer, 
+actualizar y eliminar registros en la base de datos sin escribir SQL directamente.
+Migraciones: Cuando defines un modelo, Django puede crear y aplicar 
+migraciones que crean y actualizan las tablas de la base de datos para que coincidan con tu modelo.
+
+en la carpeta tasks/models.py
+creamos un modelo Task que representa una tabla en base de datos
+con tres columnas 'title' 'description' 'done' django maneja la
+creacion y manipulacion de la tabla y los datos atravez de este modelo.
+    from django.db import models
+    # Create your models here.
+    class Task(models.Model): #la clase tarea me pide que herede desde models su clase models
+        title = models.CharField(max_length=200)
+        description = models.TextField(blank=True)
+        done = models.BooleanField(default=False)
+
+creamos archivo de migracion que describen los cambios de los modelos
+de la aplicacion. Los archivos de migración son scripts que contienen 
+instrucciones sobre cómo alterar la base de datos para reflejar los cambios en los modelos.
+    py manage.py makemigrations tasks           (o puede ser sin tasks)
+
+
+Este comando se usa para aplicar las migraciones a la base de datos. Toma los archivos de 
+migración generados por makemigrations y ejecuta las instrucciones necesarias para 
+actualizar la base de datos.
+    py manage.pu migrate tasks
+
+El Django Administration (o Django Admin) es una interfaz web que Django proporciona 
+de manera automática para gestionar los datos de tu aplicación ofrece una manera 
+fácil y eficiente de interactuar con los modelos y datos de tu aplicación 
+sin necesidad de crear una interfaz de usuario personalizada desde cero.
+    podemos ir a http://127.0.0.1:8000/admin
+pero antes hay que crear una cuenta:
+    py manage.py createsuperuser
+    podemos ir a http://127.0.0.1:8000/admin para poder entrar con nuestra cuenta
+
+registraremos el modelo de 'Task' en la interfaz de administration de django
+    from django.contrib import admin
+    from .models import Task 
+
+    # Register your models here.
+    admin.site.register(Task)
+
+para poder por el titulo en la interfaz de administracion ponemos adentro
+del archivo models.py en la clase 'Task' 
+    def __str__(self):
+        return self.title
+
+------------------------------queryset, urls ------------------------
+ver el codigo esta en 4 pasos:
+    1. serializer.py
+    2. views.py
+    3. urls.py
+    4. urls. py (django_crud_api)
+instalar thunder client y django tambien tiene interfaz de API
+
+-----------------------------DOCS---------------------------
+vamos a añadir un modulo para que documente nuestra documentacion
+    pip install coreapi
+es una biblioteca de Python que se utiliza para trabajar con APIs y facilitar la interacción con ellas.
+es una biblioteca de Python que proporciona herramientas para construir y consumir APIs. Es especialmente útil para interactuar con APIs RESTful.
+y copiamos de djago resframework autoschema legacy
+    REST_FRAMEWORK = {
+    ...: ...,
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+    }
+La configuración DEFAULT_SCHEMA_CLASS es útil para tener una representación estructurada de tu API para:
+
+Documentación de API: Generar documentación automática que describe los endpoints, parámetros, y las respuestas.
+Interacción con la API: Herramientas como Swagger UI y ReDoc pueden utilizar estos esquemas para proporcionar interfaces interactivas para explorar y probar la API.

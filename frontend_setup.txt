@@ -1,0 +1,43 @@
+----------configuracion de react-------------------
+npm create vite
+name: client
+React
+javascript
+
+cd client
+npm install
+npm run dev
+
+npm i react-router-dom react-hot-toast axios react-hook-form
+
+------plantilla basica----------
+creamos carpetas en src
+    api
+    components:
+        Navigation.jsx
+    pages
+        TaskPage.jsx
+        TaskFormPage.jsx
+eliminamos todo de:
+    App.css
+    App.jsx
+    index.css
+y reemplazamos con el codigo ya escrito ver en los archivos
+
+------listar todas las tareas que ya creamos obtener tareas---------------
+creamos en components:
+                TaskList.jsx
+
+----------------peticion back----------------------                
+components:
+    tasks.api.js
+nota: en la consola sale dos veces la peticion por dev o run
+luego error en la peticion porque se esta manejando dos servidores
+configurar en django: settings.py
+    CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+utilizar useEffect() y useState([]) puede haber un error si no hay un areglo [] en el ()
+
+---------------taskcard------------------------
+components:
+    TaskCard.jsx
+
