@@ -27,6 +27,13 @@ export function TaskFormPage() {
       });
     } else {
       await createTask(data);
+      toast.success("Tarea Creada", {
+        position: "bottom-center",
+        style: {
+          background: "#404040",
+          color: "#fff",
+        },
+      });
     }
     navigate("/tasks");
   });
