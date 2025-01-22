@@ -46,8 +46,13 @@ components:
 ------configuracion tailwindCSS-----------------
 vamos a la pagina   
     buscamos la guia con vite
+        get started-framework guides
         son dos comandos acerlos correr
-            el segundo creara dos archivos afuera
+            npm install -D tailwindcss postcss autoprefixer
+            npx tailwindcss init -p
+        el segundo comando creara dos archivos afuera
+            editar tailwind.config.js
+            editar index.css
                 y luego seguir el historial de  github
                     luego de haber configurado los dos archivos
                         npm run dev

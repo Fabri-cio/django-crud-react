@@ -55,8 +55,8 @@ permitiendo que tu API o aplicación web acepte solicitudes desde diferentes dom
 instalamos la libreria django-cors-headers
     pip install django-cors-headers
 
-ayadimos a settings.py a la lista de INTALLED_APPS:
-    'cosrsheaders'
+ayadimos a settings.py a la lista de INTALLED_APPS arriba de la apps:
+    'corsheaders'
     'rest_framework'
 para obtener las funcionalidade de las librerias o frameworks
 
@@ -68,7 +68,13 @@ Middlewares son componentes que procesan cada solicitud antes
 de que llegue a las vistas y cada respuesta antes de ser enviada al cliente.
 nota: se tiene que verificar en que orden va el middlewar de cosrsheaders en el sitio web.
     ayadimos a settings.py a la lista de MIDDLEWARE:
-        "corsheaders.middleware.CorsMiddleware",
+        esto se pone encima de: 
+	MIDDLEWARE = [
+    	...,
+    	"corsheaders.middleware.CorsMiddleware",
+    	"django.middleware.common.CommonMiddleware",
+    	...,
+	]
     tambien copiamos de la pagina la lista:
     CORS_ALLOWED_ORIGINS = [
     "https://example.com",
@@ -122,14 +128,14 @@ pero antes hay que crear una cuenta:
     py manage.py createsuperuser
     podemos ir a http://127.0.0.1:8000/admin para poder entrar con nuestra cuenta
 
-registraremos el modelo de 'Task' en la interfaz de administration de django
+registraremos el modelo de 'Task' en la interfaz de administration de django en (admin.py)
     from django.contrib import admin
     from .models import Task 
 
     # Register your models here.
     admin.site.register(Task)
 
-para poder por el titulo en la interfaz de administracion ponemos adentro
+para poder ver el titulo en la interfaz de administracion ponemos adentro
 del archivo models.py en la clase 'Task' 
     def __str__(self):
         return self.title
@@ -152,7 +158,22 @@ y copiamos de djago resframework autoschema legacy
     ...: ...,
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     }
+añadir:
+INSTALLED_APPS = [
+    'coreapi',
+    'tasks',
+]
+
+nota.puede ser que nos pida:  pip install setuptools para No module named 'pkg_resources'
+
 La configuración DEFAULT_SCHEMA_CLASS es útil para tener una representación estructurada de tu API para:
 
 Documentación de API: Generar documentación automática que describe los endpoints, parámetros, y las respuestas.
 Interacción con la API: Herramientas como Swagger UI y ReDoc pueden utilizar estos esquemas para proporcionar interfaces interactivas para explorar y probar la API.
+
+
+http://localhost:8000/tasks/api/v1/tasks/    GET
+http://localhost:8000/tasks/api/v1/tasks/5   GET
+http://localhost:8000/tasks/api/v1/tasks/    POST
+http://localhost:8000/tasks/api/v1/tasks/5/  PUT        sin id
+http://localhost:8000/tasks/api/v1/tasks/4/  DELETE
