@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
-import { getAllTasks } from "../api/tasks.api";
 import { TaskCard } from "./TaskCard";
+import { obtenerTodasLasTareas } from "../api/tasks.api";
 
 export function TasksList() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    async function loadTasks() {
-      const res = await getAllTasks();
-      setTasks(res.data);
+    async function cargarTareas() {
+      const respuesta = await obtenerTodasLasTareas();
+      setTasks(respuesta.data);
+      console.log(respuesta.data);
     }
-    loadTasks();
+    cargarTareas();
   }, []);
 
   return (
-    <div className="grid grid-cols-3 gap-3">
-      {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
+    <div className="grid grid-cols-2 gap-2">
+      {tasks.map((x) => (
+        <TaskCard key={x.id} task={x} />
       ))}
     </div>
   );

@@ -1,8 +1,9 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { createTask, deleteTask, updateTask, getTask } from "../api/tasks.api";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useTask } from "../hooks/useTask";
+import { manejarFormEnviar } from "../utils/manejarFormEnviar";
+import { DeleteButton } from "../components/DeleteButton";
 
 export function TaskFormPage() {
   const {
@@ -11,94 +12,42 @@ export function TaskFormPage() {
     formState: { errors },
     setValue,
   } = useForm();
-  const navigate = useNavigate();
-  const params = useParams();
 
-  const onSubmit = handleSubmit(async (data) => {
-    if (params.id) {
-      console.log(data);
-      await updateTask(params.id, data);
-      toast.success("Tarea Actualizada", {
-        position: "bottom-center",
-        style: {
-          background: "#404040",
-          color: "#fff",
-        },
-      });
-    } else {
-      await createTask(data);
-      toast.success("Tarea Creada", {
-        position: "bottom-center",
-        style: {
-          background: "#404040",
-          color: "#fff",
-        },
-      });
-    }
-    navigate("/tasks");
-  });
+  const navegarA = useNavigate();
 
-  useEffect(() => {
-    async function loadTask() {
-      if (params.id) {
-        // console.log("obteniendo datos");
-        const {
-          data: { title, description },
-        } = await getTask(params.id);
-        setValue("title", title);
-        setValue("description", description);
-      }
-    }
-    loadTask();
-  }, []);
+  const parametro = useParams();
+
+  //llama a la funcion de manejarDatos para crear o actualizar
+  const manejarDatos = manejarFormEnviar(parametro.id, navegarA, toast);
+
+  //funcion para obtener la tarea
+  useTask(parametro.id, setValue);
 
   return (
     <div className="max-w-xl mx-auto">
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(manejarDatos)}>
         <input
           type="text"
           placeholder="title"
           {...register("title", { required: true })}
           className="bg-zinc-700 p-3 rounded-lg block w-full mb-3"
         />
-        {errors.title && <span>title is required</span>}
+        {errors.title && <span>Titulo es requerido</span>}
 
         <textarea
           rows={3}
-          placeholder="Description"
+          placeholder="Descripcion"
           {...register("description", { required: true })}
           className="bg-zinc-700 p-3 rounded-lg block w-full mb-3"
         ></textarea>
-        {errors.description && <span>title is required</span>}
+        {errors.description && <span>Descripcion es Requerido</span>}
 
         <button className="bg-indigo-500 p-3 rounded-lg block w-full mt-3">
-          Save
+          Guardar
         </button>
       </form>
 
-      {params.id && (
-        <div className="flex justify-end">
-          <button
-            className="bg-red-500 p-3 rouded-lg w-48 mt-3"
-            onClick={async () => {
-              const aceptar = window.confirm("estas seguro");
-              if (aceptar) {
-                await deleteTask(params.id);
-                toast.success("Tarea Eliminada", {
-                  position: "bottom-center",
-                  style: {
-                    background: "#404040",
-                    color: "#fff",
-                  },
-                });
-                navigate("/tasks");
-              }
-            }}
-          >
-            Delete
-          </button>
-        </div>
-      )}
+      {parametro.id && <DeleteButton id={parametro.id} navegarA={navegarA}/>}
     </div>
   );
 }
